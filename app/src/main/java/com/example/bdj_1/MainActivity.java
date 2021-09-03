@@ -125,7 +125,6 @@ public class MainActivity extends AppCompatActivity {
     public void SaveList(View view){
         Intent intent = new Intent(this,TextListActivity.class);
         startActivity(intent);
-
     }
 
 
