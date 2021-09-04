@@ -70,9 +70,11 @@ public class MainActivity extends AppCompatActivity {
         mTess = new TessBaseAPI();
 
         String dir = getFilesDir() + "/tessract/";
+        Log.d("씨발새끼",""+dir);
 
         if(checkLanguageFile(dir+"/tessdata")) {
-            mTess.init(datapath, "kor+eng");
+            Log.d("씨발새끼",""+dir);
+            mTess.init(dir, "kor+eng");
         }
 
 
