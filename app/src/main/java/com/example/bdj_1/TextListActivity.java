@@ -71,6 +71,7 @@ public class TextListActivity extends Activity implements View.OnClickListener {
 
         try{
             InputStream is = getBaseContext().getResources().getAssets().open("mblist.xls");
+            Log.d("경로","나도 알려줘 : "+ is);
             Workbook wb = Workbook.getWorkbook(is);
 
 
