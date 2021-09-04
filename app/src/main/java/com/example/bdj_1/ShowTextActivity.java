@@ -14,7 +14,7 @@ public class ShowTextActivity extends AppCompatActivity {
 
     private ImageView saveBtn;
     private String nt;
-
+    private int a;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
