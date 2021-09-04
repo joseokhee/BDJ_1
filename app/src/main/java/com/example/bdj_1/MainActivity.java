@@ -67,16 +67,13 @@ public class MainActivity extends AppCompatActivity {
 
         PermissionCheck();
 
-        datapath = getFilesDir()+"/tessdata/";
-        Log.d("path 왜안됨","path : "+datapath);
-
-        checkFile(new File(datapath + "/tess/"));
-        Log.d("path 빡쳐","path : "+datapath);
-
-        String lang = "eng";
-
         mTess = new TessBaseAPI();
-        //mTess.init(datapath, lang);
+
+        String dir = getFilesDir() + "/tessract/";
+
+        if(checkLanguageFile(dir+"/tessdata")) {
+            mTess.init(datapath, "kor+eng");
+        }
 
 
         picimg.setOnClickListener(new View.OnClickListener() {
@@ -91,6 +88,47 @@ public class MainActivity extends AppCompatActivity {
             }
 
         });
+    }
+
+    boolean checkLanguageFile(String dir)
+    {
+        File file = new File(dir);
+        if(!file.exists() && file.mkdirs())
+            createFiles(dir);
+        else if(file.exists()){
+            String filePath = dir + "/eng.traineddata";
+            File langDataFile = new File(filePath);
+            if(!langDataFile.exists())
+                createFiles(dir);
+        }
+        return true;
+    }
+
+    private void createFiles(String dir)
+    {
+        AssetManager assetMgr = this.getAssets();
+
+        InputStream inputStream = null;
+        OutputStream outputStream = null;
+
+        try {
+            inputStream = assetMgr.open("eng.traineddata");
+
+            String destFile = dir + "/eng.traineddata";
+
+            outputStream = new FileOutputStream(destFile);
+
+            byte[] buffer = new byte[1024];
+            int read;
+            while ((read = inputStream.read(buffer)) != -1) {
+                outputStream.write(buffer, 0, read);
+            }
+            inputStream.close();
+            outputStream.flush();
+            outputStream.close();
+        }catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void processImage() {
@@ -163,47 +201,6 @@ public class MainActivity extends AppCompatActivity {
             writableWorkbook.close();
         }catch (Exception e){
             e.printStackTrace();
-        }
-    }
-
-
-    private void copyFiles() {
-        try{
-            String filepath = datapath + "eng.traineddata";
-            Log.d("카피파일","카피파일디렉" + filepath);
-            AssetManager assetManager = getAssets();
-            InputStream instream = assetManager.open("eng.traineddata");
-            OutputStream outstream = new FileOutputStream(filepath);
-            byte[] buffer = new byte[1024];
-            int read;
-            while ((read = instream.read(buffer)) != -1) {
-                outstream.write(buffer, 0, read);
-            }
-            outstream.flush();
-            outstream.close();
-            instream.close();
-
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-
-    private void checkFile(File dir) {
-        //디렉토리가 없으면 디렉토리를 만들고 그후에 파일을 카피
-        if(!dir.exists()&& dir.mkdirs()) {
-            copyFiles();
-        }
-        //디렉토리가 있지만 파일이 없으면 파일카피 진행
-        if(dir.exists()) {
-            String datafilepath = datapath+ "eng.traineddata";
-            Log.d("된다된다된다","이게 됨??" + datafilepath);
-            File datafile = new File(datafilepath);
-            if(!datafile.exists()) {
-                copyFiles();
-            }
         }
     }
 
