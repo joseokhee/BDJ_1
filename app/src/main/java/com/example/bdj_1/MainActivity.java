@@ -86,6 +86,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void saveExcel(){
+
         jxl.write.Number txt = null;
 
         try{
@@ -109,11 +110,12 @@ public class MainActivity extends AppCompatActivity {
 
             writableWorkbook.write();
             writableWorkbook.close();
+
+
         }catch (Exception e){
             e.printStackTrace();
         }
     }
-
 
     //메소드 테스트 용 토스트 출력 메소드
     public void TestToast(String message){
