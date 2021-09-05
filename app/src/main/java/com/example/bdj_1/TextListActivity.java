@@ -6,6 +6,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.res.AssetManager;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -15,6 +16,11 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.io.InputStream;
 
 import jxl.Sheet;
@@ -28,7 +34,6 @@ public class TextListActivity extends Activity implements View.OnClickListener {
     private TableRow rowList[];
     private String savetxt[];
     private Intent intent;
-    private Integer txtnum = 5;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,16 +43,6 @@ public class TextListActivity extends Activity implements View.OnClickListener {
         tableLayout = findViewById(R.id.tableLayout);
 
         readExcel();
-
-        //애들이 잘 저장되어 있나 확인하는 용도
-        //for(int i = 1; i < rowList.length; i ++){
-            //Log.d("list ",i+"번째");
-            //Log.d("in ","id : "+rowList[i]);
-            //Log.d("txt ","save : "+savetxt[i]);
-            //rowList[i].setTag(i);
-            //Log.d("txt ","save : "+ rowList[i].getTag());
-            //rowList[i].setOnClickListener(this);
-        //}
 
     }
 
@@ -69,61 +64,58 @@ public class TextListActivity extends Activity implements View.OnClickListener {
 
     public void readExcel(){
 
+        String test = null;
+        String line = null;
+        File saveFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath()+"/camdata");
+
+        if(!saveFile.exists()){
+            saveFile.mkdir();
+        }
+
+        int num = 0;
+        int num2 = 0;
+
         try{
-            InputStream is = getBaseContext().getResources().getAssets().open("mblist.xls");
-            Log.d("경로","나도 알려줘 : "+ is);
-            Workbook wb = Workbook.getWorkbook(is);
-
-
-            if(wb != null){
-                Sheet sheet = wb.getSheet(0);
-                if(sheet != null){
-
-                    int num = sheet.getRows();
-                    rowList = new TableRow[num];
-                    savetxt = new String[num];
-
-                    int colTotal = 3;
-                    int rowIndexStart = 1;
-                    int rowTotal = sheet.getColumn(colTotal-1).length;
-
-                    StringBuilder sb;
-
-                    for(int row=rowIndexStart; row<rowTotal; row++){
-                        sb = new StringBuilder();
-
-                        tableRow = new TableRow(this);
-                        tableRow.setLayoutParams(new TableRow.LayoutParams(
-                                ViewGroup.LayoutParams.MATCH_PARENT,
-                                ViewGroup.LayoutParams.WRAP_CONTENT
-                        ));
-
-                        for(int col = 0; col<colTotal; col++){
-
-                            String contents = sheet.getCell(col, row).getContents();
-
-                            Log.d("Main",col + "번째 : " + contents);
-
-                            TextView textView = new TextView(this);
-                            textView.setText(String.valueOf(contents));
-                            textView.setGravity(Gravity.CENTER);
-                            tableRow.addView(textView);
-
-                        }
-
-                        // 밑에 두 줄 = 배열에 글 저장 하기
-                        String contents2 = sheet.getCell(3, row).getContents();
-                        savetxt[row] = contents2;
-
-                        tableRow.setTag(row);
-                        Log.d("Main", "아이디 : " + tableRow.getTag());
-                        rowList[row] = tableRow;
-                        tableLayout.addView(tableRow);
-                        rowList[row].setOnClickListener(this);
-                    }
-                }
+            BufferedReader buf = new BufferedReader(new FileReader(saveFile + "/txtData.txt"));
+            BufferedReader buf2 = new BufferedReader(new FileReader(saveFile + "/txtData.txt"));
+            while((test = buf2.readLine())!=null){
+                num=num+1;
             }
-        }catch (Exception e){
+            Log.d("출력해봄",""+num);
+
+            rowList = new TableRow[num];
+            savetxt = new String[num];
+
+            while((line=buf.readLine())!=null){
+                Log.d("엥왜안됨?",""+line);
+                savetxt[num2] = line;
+                Log.d("savetxt",""+savetxt[num2]);
+
+                tableRow = new TableRow(this);
+                tableRow.setLayoutParams(new TableRow.LayoutParams(
+                        ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.WRAP_CONTENT
+                ));
+
+                TextView textView = new TextView(this);
+                textView.setText(String.valueOf(line));
+                textView.setGravity(Gravity.LEFT);
+                tableRow.addView(textView);
+
+                tableRow.setTag(num2);
+                Log.d("Main", "아이디 : " + tableRow.getTag());
+
+                rowList[num2] = tableRow;
+                tableLayout.addView(tableRow);
+                rowList[num2].setOnClickListener(this);
+
+                num2 += 1;
+            }
+            buf2.close();
+            buf.close();
+        }catch (FileNotFoundException e){
+            e.printStackTrace();
+        }catch(IOException e){
             e.printStackTrace();
         }
     }

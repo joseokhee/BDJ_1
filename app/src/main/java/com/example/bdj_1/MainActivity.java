@@ -18,8 +18,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.content.Intent;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import jxl.Cell;
 import jxl.Sheet;
@@ -66,8 +72,31 @@ public class MainActivity extends AppCompatActivity {
 
                     showimg.setImageBitmap(img);
 
-                    newtext = "아악하기시렁";
-                    saveExcel();
+                    newtext = "이타치야마";
+
+                    File saveFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath()+"/camdata");
+
+                    if(!saveFile.exists()){
+                        saveFile.mkdir();
+                    }
+
+                    try{
+                        long now = System.currentTimeMillis();
+                        Date date = new Date(now);
+                        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                        String nowTime = sdf.format(date);
+
+                        BufferedWriter buf = new BufferedWriter(new FileWriter(saveFile+"/txtData.txt",true));
+                        buf.append(nowTime+" | ");
+                        buf.append(newtext);
+                        buf.newLine();
+                        buf.close();
+                        Log.d("텍스트파일저장","됐음");
+                    } catch (FileNotFoundException e){
+                        e.printStackTrace();
+                    } catch (IOException e){
+                        e.printStackTrace();
+                    }
 
                     Intent intent2 = new Intent(this,ShowTextActivity.class);
                     intent2.putExtra("newtext",newtext);
@@ -81,36 +110,6 @@ public class MainActivity extends AppCompatActivity {
             else if(resultCode == RESULT_CANCELED){
                 Toast.makeText(this, "사진오바스",Toast.LENGTH_LONG).show();
             }
-        }
-    }
-
-
-    public void saveExcel(){
-        jxl.write.Number txt = null;
-
-        try{
-
-            String strDir = Environment.getExternalStorageDirectory().getAbsolutePath();
-            String strFileName = "mblist.xls";
-
-            InputStream is = getBaseContext().getResources().getAssets().open("mblist.xls");
-            Workbook wb = Workbook.getWorkbook(is);
-
-            WritableWorkbook writableWorkbook = Workbook.createWorkbook(new File(strDir, strFileName), wb);
-
-            WritableSheet sheet = writableWorkbook.getSheet(0);
-
-            int idx_x = sheet.getRows();
-            int idx_y = 0;
-
-            jxl.write.Label cellTestLabel = new Label(idx_x,idx_x,newtext,sheet.getWritableCell(idx_x,idx_y).getCellFormat());
-
-            sheet.addCell(cellTestLabel);
-
-            writableWorkbook.write();
-            writableWorkbook.close();
-        }catch (Exception e){
-            e.printStackTrace();
         }
     }
 
