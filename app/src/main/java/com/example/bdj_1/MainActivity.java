@@ -2,6 +2,7 @@ package com.example.bdj_1;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.inputmethodservice.Keyboard;
@@ -18,12 +19,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.content.Intent;
 
+import com.googlecode.tesseract.android.TessBaseAPI;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -35,7 +40,8 @@ import jxl.write.WritableSheet;
 import jxl.write.WritableWorkbook;
 
 public class MainActivity extends AppCompatActivity {
-
+    TessBaseAPI tess;
+    String dataPath;
     private static final int REQUEST_CODE = 0;
     private ImageView showimg;
     private ImageView picimg;
@@ -45,6 +51,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+
 
         showimg = findViewById(R.id.imageView2);
         picimg = findViewById(R.id.pic_img);
@@ -61,6 +69,54 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    public String processImage(Bitmap bitmap){
+        String OCRresult=null;
+        tess.setImage(bitmap);
+        OCRresult=tess.getUTF8Text();
+        return OCRresult;
+    }
+
+    private void copyFiles(String lang){
+        try{
+          String filepath=dataPath+"/tessdata/"+lang+".traineddata";
+
+            AssetManager assetManager=getAssets();
+
+            InputStream inStream=assetManager.open("tessdata/"+lang+".traineddata");
+            OutputStream outStream=new FileOutputStream(filepath);
+
+            byte[] buffer=new byte[1024];
+            int read;
+            while((read=inStream.read(buffer))!=-1){
+                outStream.write(buffer,0,read);
+            }
+            outStream.flush();
+            outStream.close();
+            inStream.close();
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+    }
+    private void checkFile(File dir,String lang){
+        boolean t1=dir.exists();
+        boolean t2=dir.mkdirs();
+
+
+        if(!dir.exists() && dir.mkdirs()){
+            copyFiles(lang);
+        }
+        if(dir.exists()){
+            String datafilepath=dataPath+"/tessdata/"+lang+".traineddata";
+            File datafile=new File(datafilepath);
+            boolean a= datafile.exists();
+            if(!datafile.exists()){
+                copyFiles(lang);
+            }
+        }
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data){
         if(requestCode == REQUEST_CODE){
@@ -70,9 +126,19 @@ public class MainActivity extends AppCompatActivity {
                     Bitmap img = BitmapFactory.decodeStream(in);
                     in.close();
 
-                    showimg.setImageBitmap(img);
+                   // showimg.setImageBitmap(img);
 
-                    newtext = "이타치야마";
+                    dataPath=getFilesDir()+"/tesseract/";
+                    checkFile(new File(dataPath+"tessdata/"),"kor");
+                    checkFile(new File(dataPath+"tessdata/"),"eng");
+
+                    String lang="kor+eng";
+                    tess=new TessBaseAPI();
+                    tess.init(dataPath,lang);
+
+
+
+                    newtext = processImage(img);
 
                     File saveFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath()+"/camdata");
 
@@ -104,7 +170,7 @@ public class MainActivity extends AppCompatActivity {
                     finish();
 
                 }catch(Exception e){
-
+                    e.printStackTrace();
                 }
             }
             else if(resultCode == RESULT_CANCELED){
