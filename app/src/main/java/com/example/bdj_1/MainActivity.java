@@ -167,7 +167,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
             else if(resultCode == RESULT_CANCELED){
-                Toast.makeText(this, "사진 선택에 실패 했습니다.",Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "사진오바스",Toast.LENGTH_LONG).show();
             }
         }
     }
