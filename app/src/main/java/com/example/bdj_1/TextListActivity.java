@@ -66,7 +66,7 @@ public class TextListActivity extends Activity implements View.OnClickListener {
 
         String test = null;
         String line = null;
-        File saveFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath()+"/camdata");
+        File saveFile = new File(getExternalFilesDir(null)+"/camdata");
 
         if(!saveFile.exists()){
             saveFile.mkdirs();

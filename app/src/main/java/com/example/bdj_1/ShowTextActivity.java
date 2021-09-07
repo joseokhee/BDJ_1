@@ -44,7 +44,7 @@ public class ShowTextActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 TestToast(nt);
-                File saveFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath()+"/camdata");
+                File saveFile = new File(getExternalFilesDir(null)+"/camdata");
 
                 if(!saveFile.exists()){
                     saveFile.mkdirs();
