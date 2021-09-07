@@ -17,6 +17,7 @@
             android:layout_height="83dp"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/logo"
+            android:onClick="mainLogo"
             tools:layout_editor_absoluteX="0dp" />
 
         <View

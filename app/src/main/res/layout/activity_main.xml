@@ -17,6 +17,7 @@
             android:layout_height="83dp"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/logo"
+            android:onClick="mainLogo"
             tools:layout_editor_absoluteX="0dp" />
 
         <View
@@ -42,11 +43,6 @@
                 android:onClick="SaveList"
                 app:srcCompat="@drawable/save_img" />
 
-            <ImageView
-                android:id="@+id/imageView2"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:srcCompat="@mipmap/ic_launcher_round" />
         </LinearLayout>
     </LinearLayout>
 

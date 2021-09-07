@@ -152,8 +152,17 @@ public class MainActivity extends AppCompatActivity {
                     tess.init(dataPath,lang);
 
 
+                    progressDialog=new ProgressDialog(MainActivity.this);
+                    progressDialog.setMessage("문자 인식 중 ...");
+                    progressDialog.show();
                     OCR_text= processImage(img);
+                    progressDialog.dismiss();
+
+                    progressDialog=new ProgressDialog(MainActivity.this);
+                    progressDialog.setMessage("Please wait.....");
+                    progressDialog.show();
                     newtext=getJSON(OCR_text);
+
 
 
                     File saveFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath()+"/camdata");
@@ -198,7 +207,6 @@ public class MainActivity extends AppCompatActivity {
     public String getJSON(final String in){
 
         final String[] result = {""};
-
         Thread thread= new Thread(new Runnable() {
 
             @Override
@@ -267,12 +275,6 @@ public class MainActivity extends AppCompatActivity {
 
         });
         thread.start();
-        try{
-            thread.join();
-        }
-        catch (Exception e){
-            e.printStackTrace();
-        }
         return result[0];
     }
     //메소드 테스트 용 토스트 출력 메소드
