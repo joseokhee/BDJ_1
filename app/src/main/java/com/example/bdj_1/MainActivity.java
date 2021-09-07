@@ -2,12 +2,14 @@ package com.example.bdj_1;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.app.ProgressDialog;
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.inputmethodservice.Keyboard;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
@@ -62,15 +64,12 @@ public class MainActivity extends AppCompatActivity {
 
     private String REQUEST_URL = "http://203.229.97.58:8003/items/";
 
-    private ProgressDialog progressDialog;
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
+        perCheck();
 
         picimg = findViewById(R.id.pic_img);
 
@@ -95,7 +94,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void copyFiles(String lang){
         try{
-          String filepath=dataPath+"/tessdata/"+lang+".traineddata";
+            String filepath=dataPath+"/tessdata/"+lang+".traineddata";
 
             AssetManager assetManager=getAssets();
 
@@ -117,6 +116,9 @@ public class MainActivity extends AppCompatActivity {
 
     }
     private void checkFile(File dir,String lang){
+        boolean t1=dir.exists();
+        boolean t2=dir.mkdirs();
+
 
         if(!dir.exists() && dir.mkdirs()){
             copyFiles(lang);
@@ -140,7 +142,7 @@ public class MainActivity extends AppCompatActivity {
                     Bitmap img = BitmapFactory.decodeStream(in);
                     in.close();
 
-                   // showimg.setImageBitmap(img);
+                    // showimg.setImageBitmap(img);
 
                     dataPath=getFilesDir()+"/tesseract/";
                     checkFile(new File(dataPath+"tessdata/"),"kor");
@@ -154,32 +156,7 @@ public class MainActivity extends AppCompatActivity {
                     OCR_text= processImage(img);
                     newtext=getJSON(OCR_text);
 
-
-
-                    File saveFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath()+"/camdata");
-
-                    if(!saveFile.exists()){
-                        saveFile.mkdir();
-                    }
-
-                    try{
-                        long now = System.currentTimeMillis();
-                        Date date = new Date(now);
-                        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-                        String nowTime = sdf.format(date);
-
-                        BufferedWriter buf = new BufferedWriter(new FileWriter(saveFile+"/txtData.txt",true));
-                        buf.append(nowTime+" | ");
-                        buf.append(newtext);
-                        buf.newLine();
-                        buf.close();
-                        Log.d("텍스트파일저장","됐음");
-                    } catch (FileNotFoundException e){
-                        e.printStackTrace();
-                    } catch (IOException e){
-                        e.printStackTrace();
-                    }
-
+                    newtext = newtext.replace(System.getProperty("line.separator").toString(),"");
                     Intent intent2 = new Intent(this,ShowTextActivity.class);
                     intent2.putExtra("newtext",newtext);
                     startActivity(intent2);
@@ -194,10 +171,10 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
-
     public String getJSON(final String in){
 
         final String[] result = {""};
+
         Thread thread= new Thread(new Runnable() {
 
             @Override
@@ -274,6 +251,8 @@ public class MainActivity extends AppCompatActivity {
         }
         return result[0];
     }
+
+
     //메소드 테스트 용 토스트 출력 메소드
     public void TestToast(String message){
         Toast.makeText(getApplication(),message,Toast.LENGTH_LONG).show();
@@ -284,8 +263,26 @@ public class MainActivity extends AppCompatActivity {
     public void SaveList(View view){
         Intent intent = new Intent(this,TextListActivity.class);
         startActivity(intent);
-
     }
 
+
+    public void mainLogo(View view){
+        Intent intent = new Intent(this,MainActivity.class);
+        startActivity(intent);
+    }
+
+    public void perCheck(){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if(checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
+                    || checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                if(shouldShowRequestPermissionRationale(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                    Toast.makeText(this, "저장소 사용을 위한 권한 요청", Toast.LENGTH_SHORT).show();
+                }
+
+                requestPermissions(new String[]
+                        {Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE}, 2);
+            }
+        }
+    }
 
 }
