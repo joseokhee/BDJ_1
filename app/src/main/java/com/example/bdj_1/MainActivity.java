@@ -72,7 +72,6 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-        showimg = findViewById(R.id.imageView2);
         picimg = findViewById(R.id.pic_img);
 
         picimg.setOnClickListener(new View.OnClickListener() {
@@ -152,15 +151,7 @@ public class MainActivity extends AppCompatActivity {
                     tess.init(dataPath,lang);
 
 
-                    progressDialog=new ProgressDialog(MainActivity.this);
-                    progressDialog.setMessage("문자 인식 중 ...");
-                    progressDialog.show();
                     OCR_text= processImage(img);
-                    progressDialog.dismiss();
-
-                    progressDialog=new ProgressDialog(MainActivity.this);
-                    progressDialog.setMessage("Please wait.....");
-                    progressDialog.show();
                     newtext=getJSON(OCR_text);
 
 
@@ -275,6 +266,12 @@ public class MainActivity extends AppCompatActivity {
 
         });
         thread.start();
+        try{
+            thread.join();
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
         return result[0];
     }
     //메소드 테스트 용 토스트 출력 메소드
