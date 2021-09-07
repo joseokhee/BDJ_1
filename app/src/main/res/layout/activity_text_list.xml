@@ -17,6 +17,7 @@
             android:layout_height="83dp"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/logo"
+            android:onClick="mainLogo"
             tools:layout_editor_absoluteX="0dp" />
 
         <View
@@ -36,17 +37,17 @@
 
                 <TextView
                     android:id="@+id/date"
-                    android:layout_height="wrap_content"
                     android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:text="날짜" />
+                    android:text= "날짜" />
 
                 <TextView
-                    android:id="@+id/txt"
-                    android:layout_height="wrap_content"
+                    android:id="@+id/title"
                     android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:text="내용" />
+                    android:text= "내용" />
 
             </TableRow>
 

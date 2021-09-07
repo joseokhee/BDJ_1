@@ -69,7 +69,7 @@ public class TextListActivity extends Activity implements View.OnClickListener {
         File saveFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath()+"/camdata");
 
         if(!saveFile.exists()){
-            saveFile.mkdir();
+            saveFile.mkdirs();
         }
 
         int num = 0;
@@ -97,10 +97,22 @@ public class TextListActivity extends Activity implements View.OnClickListener {
                         ViewGroup.LayoutParams.WRAP_CONTENT
                 ));
 
+
+                String line2 = line.substring(line.indexOf("|")+1);
+                Log.d("내용",""+line2);
+                line = line.substring(0,line.indexOf(" "));
+                Log.d("내용",""+line);
+
                 TextView textView = new TextView(this);
                 textView.setText(String.valueOf(line));
                 textView.setGravity(Gravity.LEFT);
+
+                TextView textView2 = new TextView(this);
+                textView2.setText(String.valueOf(line2));
+                textView2.setGravity(Gravity.LEFT);
+
                 tableRow.addView(textView);
+                tableRow.addView(textView2);
 
                 tableRow.setTag(num2);
                 Log.d("Main", "아이디 : " + tableRow.getTag());
@@ -118,5 +130,10 @@ public class TextListActivity extends Activity implements View.OnClickListener {
         }catch(IOException e){
             e.printStackTrace();
         }
+    }
+
+    public void mainLogo(View view){
+        Intent intent = new Intent(this,MainActivity.class);
+        startActivity(intent);
     }
 }
