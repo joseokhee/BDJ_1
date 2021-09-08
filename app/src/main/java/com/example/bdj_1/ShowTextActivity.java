@@ -45,7 +45,6 @@ public class ShowTextActivity extends AppCompatActivity {
             public void onClick(View view) {
                 TestToast(nt);
                 File saveFile = new File(getExternalFilesDir(null)+"/camdata");
-
                 if(!saveFile.exists()){
                     saveFile.mkdirs();
                     Log.d("폴더","만들어짐");
