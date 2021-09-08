@@ -154,6 +154,8 @@ public class MainActivity extends AppCompatActivity {
 
 
                     OCR_text= processImage(img);
+                    OCR_text=OCR_text.replace(System.getProperty("line.separator"), " ");
+
                     newtext=getJSON(OCR_text);
 
                     newtext = newtext.replace(System.getProperty("line.separator").toString(),"");
@@ -181,6 +183,7 @@ public class MainActivity extends AppCompatActivity {
             public void run() {
 
                 try{
+                    String[] temp;
 
                     String json="";
                     JSONObject jsonObject=new JSONObject();
@@ -228,6 +231,7 @@ public class MainActivity extends AppCompatActivity {
                     httpURLConnection.disconnect();
 
                     result[0] =sb.toString().trim();
+                    result[0]=result[0].substring(11,result[0].length()-2);
 
 
 

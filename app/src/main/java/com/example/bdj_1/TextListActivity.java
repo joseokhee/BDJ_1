@@ -1,10 +1,12 @@
 package com.example.bdj_1;
 
+import androidx.annotation.Dimension;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.content.res.AssetManager;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
@@ -105,10 +107,14 @@ public class TextListActivity extends Activity implements View.OnClickListener {
 
                 TextView textView = new TextView(this);
                 textView.setText(String.valueOf(line));
+                textView.setTextSize(Dimension.SP,15);
+                textView.setTextColor(Color.parseColor("#000000"));
                 textView.setGravity(Gravity.LEFT);
 
                 TextView textView2 = new TextView(this);
                 textView2.setText(String.valueOf(line2));
+                textView2.setTextSize(Dimension.SP,15);
+                textView2.setTextColor(Color.parseColor("#000000"));
                 textView2.setGravity(Gravity.LEFT);
 
                 tableRow.addView(textView);

@@ -4,6 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:gravity="center"
+    android:textAlignment="center"
     tools:context=".ShowTextActivity">
 
     <LinearLayout
@@ -14,9 +16,9 @@
         <ImageView
             android:layout_width="411dp"
             android:layout_height="83dp"
+            android:onClick="mainLogo"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/logo"
-            android:onClick="mainLogo"
             tools:layout_editor_absoluteX="0dp" />
 
         <View
@@ -29,15 +31,18 @@
             android:id="@+id/newTextView"
             android:layout_width="match_parent"
             android:layout_height="347dp"
-            android:text="TextView" />
+            android:text="TextView"
+            android:gravity="center"
+            android:textSize="20sp"
+            android:textColor="#000000"/>
 
         <ImageView
             android:id="@+id/saveBtn"
             android:layout_width="match_parent"
             android:layout_height="91dp"
-            android:onClick="saveText"
             android:layout_alignParentBottom="true"
             android:layout_gravity="bottom"
+            android:onClick="saveText"
             app:srcCompat="@drawable/save_btn" />
 
     </LinearLayout>

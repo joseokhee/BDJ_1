@@ -34,6 +34,8 @@
                 android:id="@+id/showtext"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:textSize="20sp"
+                android:textColor="#000000"
                 android:text="TextView" />
         </LinearLayout>
 
