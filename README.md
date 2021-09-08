@@ -1,4 +1,6 @@
-# BertSum
+# 별다줄
+
+## 긴 글 요약 API
 
 **This code is from paper `Fine-tune BERT for Extractive Summarization`**(https://arxiv.org/pdf/1903.10318.pdf)
 
@@ -12,46 +14,27 @@ Some codes are borrowed from ONMT(https://github.com/OpenNMT/OpenNMT-py)
 
 ### 해당 문서의 원저작권은 Nlpyang의 [BertSum](https://github.com/nlpyang/BertSum) 에 있습니다.
 
-### **[저의 벨로그](https://velog.io/@raqoon886/KorBertSum-SummaryBot)** 에 코드와 플로우 설명이 있습니다.
+### 학습 데이터
+학습 데이터는 aihub에서 제공하는 문서 요약 텍스트 데이터를 사용하였습니다. (https://aihub.or.kr/aidata/8054)
+
+### pretrained bert
+fine tuning을 위해 ETRI에서 제공하는 한국어 pretrained BERT를 사용하였습니다. 
+사용 협약으로 인해 코드 및 데이터는 비공개.(https://aiopen.etri.re.kr/service_dataset.php)
+
+### 형태소 분리 모델
+aihub에서 제공하는 언어 분석 기술 사용 (https://aihub.or.kr/ai_software/361)
+
+### REST API
+Fast api 사용 구현
 
 
-#### Step 1. Prepare Data
+## Android 어플리케이션
 
-To run etri-api-scraper.py
-```
-python etri_api_scraper.py --input '.../train.jsonl' --api_key 'openapi key' --first_index 0 --last_index 5000
-```
+### work flow
 
-From newsdata to json
-```
-python article_to_json.py -mode train -news_dir '' -output ''
-```
+1. 사진 입력 -> OCR (tesserct 사용) -> API call -> 결과 출력 -> 결과 내부 text파일로 저장
+2. 저장된 결과 보기 -> 내부 text 파일 read -> list 출력 -> 선택 시 내용 출력
 
-From json to Bert pytorch file
-```
-python preprocess.py -mode format_to_bert -raw_path ../json_data -save_path ../bert_data -vocab_file_path 'etri vocab file list'
-```
+시연 영상 참고
 
-#### Step 2. Train
-
-To train with endoer-classifier
-```
-python train.py -mode train -encoder classifier -dropout 0.1 -bert_data_path ../bert_data/korean -model_path ../models/bert_classifier -lr 2e-3 -visible_gpus 0 -gpu_ranks 0 -world_size 1 -report_every 50 -save_checkpoint_steps 1000 -batch_size 1000 -decay_method noam -train_steps 1000 -accum_count 1 -log_file ../logs/bert_classifier -use_interval true -warmup_steps 8000 -bert_model ../001_bert_morp_pytorch -bert_config_path ../001_bert_morp_pytorch/bert_config.json -temp_dir ../temp
-```
-
-#### Step 3. Validate
-
-위의 코드에서 -mode validate로 수정하면 됩니다.
-
-#### Step 4. Test
-
-위의 코드에서 -mode test -test_from bert_model_path 로 수정하면 됩니다.
-
-실행 예시 파일 Newsdata_extractive_summ.ipynb 에 실행 예시가 있습니다.
-
-
-## CHATBOT
-
-Newsdata_summarybot.ipynb 에 실행 예시가 있습니다.
-![example](https://github.com/raqoon886/KoBertSum/tree/master/summbot.png)
 
