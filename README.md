@@ -36,5 +36,6 @@ Fast api 사용 구현
 2. 저장된 결과 보기 -> 내부 text 파일 read -> list 출력 -> 선택 시 내용 출력
 
 시연 영상 참고
+https://youtu.be/EI8dDueB7tg
 
 
