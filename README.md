@@ -1,41 +1,45 @@
-# 별다줄
+# ByulDaJul (별다줄) — Korean Document Summarizer
 
-## 긴 글 요약 API
+> Photo of a long Korean text → OCR → extractive summary, served through a REST API and an Android app.
+> Team project, 2021.
 
-**This code is from paper `Fine-tune BERT for Extractive Summarization`**(https://arxiv.org/pdf/1903.10318.pdf)
+**Demo video:** https://youtu.be/EI8dDueB7tg
 
-**!New: Please see our [full paper](https://arxiv.org/abs/1908.08345) with trained models**
+## Overview
 
-Package Requirements: pytorch pytorch_pretrained_bert tensorboardX multiprocess pyrouge
+| Component | What it does |
+|---|---|
+| **Summarization model** | BertSum (extractive) fine-tuned for Korean, on top of ETRI's Korean pretrained BERT |
+| **Morphological analysis** | ETRI WiseNLU API, used to tokenize input the same way as the pretraining corpus |
+| **REST API** | FastAPI server wrapping the summarizer |
+| **Android app** | Camera/photo input → Tesseract OCR → API call → saved summaries list |
 
-Some codes are borrowed from ONMT(https://github.com/OpenNMT/OpenNMT-py)
+### App workflow
+1. Take or pick a photo → OCR (Tesseract) → call the summary API → show the result and save it as a text file on the device
+2. Browse saved summaries → open any entry to read it again
 
-## 한국어 문서 추출요약을 위한 Modified BertSum
+## Repository layout
 
-### 해당 문서의 원저작권은 Nlpyang의 [BertSum](https://github.com/nlpyang/BertSum) 에 있습니다.
+```
+├── src/              # BertSum training / inference code, API entry (main.py)
+├── app/              # Android application (Java)
+├── article_to_json.py, etri_api_scraper.py   # data preparation
+├── bert_config_uncased_base.json
+└── urls/             # data split mapping files from the original BertSum
+```
 
-### 학습 데이터
-학습 데이터는 aihub에서 제공하는 문서 요약 텍스트 데이터를 사용하였습니다. (https://aihub.or.kr/aidata/8054)
+## Setup
 
-### pretrained bert
-fine tuning을 위해 ETRI에서 제공하는 한국어 pretrained BERT를 사용하였습니다. 
-사용 협약으로 인해 코드 및 데이터는 비공개.(https://aiopen.etri.re.kr/service_dataset.php)
+```bash
+pip install torch pytorch_pretrained_bert tensorboardX multiprocess pyrouge easydict fastapi
+export ETRI_API_KEY=<your ETRI open API key>   # required for morphological analysis
+```
 
-### 형태소 분리 모델
-aihub에서 제공하는 언어 분석 기술 사용 (https://aihub.or.kr/ai_software/361)
+- **Training data:** AI Hub document summarization dataset (https://aihub.or.kr/aidata/8054)
+- **Pretrained BERT:** ETRI KorBERT (https://aiopen.etri.re.kr). Weights and vocab are **not included** because of the ETRI usage agreement — request them from ETRI directly.
 
-### REST API
-Fast api 사용 구현
+## Acknowledgements
 
-
-## Android 어플리케이션
-
-### work flow
-
-1. 사진 입력 -> OCR (tesserct 사용) -> API call -> 결과 출력 -> 결과 내부 text파일로 저장
-2. 저장된 결과 보기 -> 내부 text 파일 read -> list 출력 -> 선택 시 내용 출력
-
-시연 영상 참고
-https://youtu.be/EI8dDueB7tg
-
-
+- Model code is adapted from [nlpyang/BertSum](https://github.com/nlpyang/BertSum) — *Fine-tune BERT for Extractive Summarization* ([arXiv:1903.10318](https://arxiv.org/abs/1903.10318)). Original copyright belongs to the BertSum authors.
+- Some code is borrowed from [OpenNMT-py](https://github.com/OpenNMT/OpenNMT-py).
+- Korean data pipeline references [KorBertSum](https://velog.io/@raqoon886/KorBertSum-SummaryBot).

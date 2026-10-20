@@ -12,3 +12,12 @@
 /captures
 .externalNativeBuild
 .cxx
+
+# Python
+__pycache__/
+*.pyc
+# Data / checkpoints
+bert_data/
+*.pt
+logs/
+.env

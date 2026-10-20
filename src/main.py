@@ -386,7 +386,7 @@ init_logger(args.log_file)
 device = "cpu" if args.visible_gpus == '-1' else "cuda"
 device_id = 0 if device == "cuda" else -1
 model_flags = ['hidden_size', 'ff_size', 'heads', 'inter_layers','encoder','ff_actv', 'use_interval','rnn_size']
-openapi_key = 'd3d96f0c-cbc1-4e96-92bd-761de5797992'
+openapi_key = os.environ.get('ETRI_API_KEY', '')  # set ETRI_API_KEY in your environment
 
 def do_lang ( openapi_key, text ) :
     openApiURL = "http://aiopen.etri.re.kr:8000/WiseNLU"
